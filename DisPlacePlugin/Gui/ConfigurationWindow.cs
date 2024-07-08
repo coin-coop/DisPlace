@@ -132,11 +132,14 @@ namespace DisPlacePlugin.Gui
 
         private bool CheckModeForSave()
         {
+            return true; // LOL, LMAO
+            /*
             if (Memory.Instance.IsHousingMode()) return true;
 
             LogError("Unable to save layouts outside of Layout mode");
             LogLayoutMode();
             return false;
+            */
         }
 
         private bool CheckModeForLoad()
@@ -310,10 +313,9 @@ namespace DisPlacePlugin.Gui
 
             ImGui.Dummy(new Vector2(0, 15));
 
-            //bool noFloors = Memory.Instance.GetCurrentTerritory() != Memory.HousingArea.Indoors || Memory.Instance.GetIndoorHouseSize().Equals("Apartment");
+            bool noFloors = Memory.Instance.GetCurrentTerritory() != Memory.HousingArea.Indoors || Memory.Instance.GetIndoorHouseSize().Equals("Apartment");
 
-            //if (!noFloors)
-            if(false)
+            if (!noFloors)
             {
 
                 ImGui.Text("Selected Floors");

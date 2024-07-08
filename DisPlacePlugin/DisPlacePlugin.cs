@@ -1,19 +1,6 @@
-﻿using Dalamud.Data;
-using Dalamud.Game;
-using Dalamud.Game.ClientState;
-using Dalamud.Game.ClientState.Objects;
-using Dalamud.Game.ClientState.Objects.Types;
-using Dalamud.Game.Command;
-using Dalamud.Game.Gui;
-using Dalamud.Game.Network;
-using Dalamud.IoC;
-using Dalamud.Logging;
+﻿using Dalamud.Game.Command;
 using Dalamud.Plugin;
-using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.Game.MJI;
-using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using ImGuiScene;
 using Lumina.Excel.GeneratedSheets;
 using DisPlacePlugin.Objects;
 using DisPlacePlugin.Util;
@@ -97,8 +84,8 @@ namespace DisPlacePlugin
 
             IsSaveLayoutHook = HookManager.Hook<UpdateLayoutDelegate>("40 53 48 83 ec 20 48 8b d9 48 8b 0d ?? ?? ?? ?? e8 ?? ?? ?? ?? 33 d2 48 8b c8 e8 ?? ?? ?? ?? 84 c0 75 ?? 38 83 ?? 01 00 00", IsSaveLayoutDetour);
 
-            SelectItemHook = HookManager.Hook<SelectItemDelegate>("48 89 5c 24 18 55 56 57 41 54 41 55 41 56 41 57 48 83 ec ??", SelectItemDetour);
-
+            SelectItemHook = HookManager.Hook<SelectItemDelegate>("E8 ?? ?? 00 00 48 8B CE E8 ?? ?? 00 00 48 8B ?? ?? ?? 48", SelectItemDetour);
+            
             UpdateYardObjHook = HookManager.Hook<UpdateYardDelegate>("48 89 74 24 18 57 48 83 ec 20 b8 dc 02 00 00 0f b7 f2 ??", UpdateYardObj);
 
             GetGameObjectHook = HookManager.Hook<GetObjectDelegate>("48 89 5c 24 08 48 89 74 24 10 57 48 83 ec 20 0f b7 f2 33 db 0f 1f 40 00 0f 1f 84 00 00 00 00 00", GetGameObject);
@@ -142,7 +129,7 @@ namespace DisPlacePlugin
         {
             UpdateYardObjHook.Original(objectList, index);
         }
-
+        
         unsafe static public void SelectItemDetour(IntPtr housing, IntPtr item)
         {
             SelectItemHook.Original(housing, item);
@@ -153,7 +140,7 @@ namespace DisPlacePlugin
         {
             SelectItemDetour((IntPtr)Memory.Instance.HousingStructure, item);
         }
-
+        
 
         public unsafe void PlaceItems()
         {
@@ -183,7 +170,7 @@ namespace DisPlacePlugin
                         Log($"{item.Name} is already correctly placed");
                         continue;
                     }
-
+                    
                     SetItemPosition(item);
 
                     if (Config.LoadInterval > 0)
@@ -218,15 +205,20 @@ namespace DisPlacePlugin
 
             if (rowItem.ItemStruct == IntPtr.Zero) return;
 
-            Log("Placing " + rowItem.Name);
-
             var MemInstance = Memory.Instance;
 
             logHousingDetour = true;
             ApplyChange = true;
 
-            SelectItem(rowItem.ItemStruct);
+            //SelectItem(rowItem.ItemStruct);
 
+            var thisItem = MemInstance.HousingStructure->ActiveItem;
+            if (thisItem == null) {
+                    DalamudApi.PluginLog.Error("Error occured while writing position! Item Was null");
+                    return;
+            }
+
+            Log("Placing " + rowItem.Name);
 
             Vector3 position = new Vector3(rowItem.X, rowItem.Y, rowItem.Z);
             Vector3 rotation = new Vector3();

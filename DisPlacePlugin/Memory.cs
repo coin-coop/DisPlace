@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using Dalamud.Game;
-using Dalamud.Logging;
-using Dalamud.Plugin;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.MJI;
 using Lumina.Excel.GeneratedSheets;
@@ -342,8 +338,9 @@ namespace DisPlacePlugin
             try
             {
                 var item = HousingStructure->ActiveItem;
-                if (item == null)
+                if (item == null) {
                     return;
+                }
 
                 // Set the position.
                 item->Position = newPosition;
