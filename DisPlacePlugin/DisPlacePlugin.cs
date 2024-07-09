@@ -84,7 +84,7 @@ namespace DisPlacePlugin
 
             IsSaveLayoutHook = HookManager.Hook<UpdateLayoutDelegate>("40 53 48 83 ec 20 48 8b d9 48 8b 0d ?? ?? ?? ?? e8 ?? ?? ?? ?? 33 d2 48 8b c8 e8 ?? ?? ?? ?? 84 c0 75 ?? 38 83 ?? 01 00 00", IsSaveLayoutDetour);
 
-            SelectItemHook = HookManager.Hook<SelectItemDelegate>("E8 ?? ?? 00 00 48 8B CE E8 ?? ?? 00 00 48 8B ?? ?? ?? 48", SelectItemDetour);
+            SelectItemHook = HookManager.Hook<SelectItemDelegate>("48 85 D2 0F 84 49 09 00 00 53 41 56 48 83 EC 48 48 89 6C 24 60 48 8B DA 48 89 74 24 70 4C 8B F1", SelectItemDetour);
             
             UpdateYardObjHook = HookManager.Hook<UpdateYardDelegate>("48 89 74 24 18 57 48 83 ec 20 b8 dc 02 00 00 0f b7 f2 ??", UpdateYardObj);
 
@@ -210,7 +210,7 @@ namespace DisPlacePlugin
             logHousingDetour = true;
             ApplyChange = true;
 
-            //SelectItem(rowItem.ItemStruct);
+            SelectItem(rowItem.ItemStruct);
 
             var thisItem = MemInstance.HousingStructure->ActiveItem;
             if (thisItem == null) {
