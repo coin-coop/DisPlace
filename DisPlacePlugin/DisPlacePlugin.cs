@@ -157,6 +157,12 @@ namespace DisPlacePlugin
 
         unsafe static public void PlaceItemDetour(IntPtr housing, IntPtr item)
         {
+            /*
+            The call made by the XIV client has some strange behaviour.
+            It can either place the item pointer passed to it or it retrieves the activeItem from the housing object.
+            I tried passing the active item but I believe that doing so led to more crashes.
+            As such I've just defaulted to the easier path of just passing in a zero pointer so that the call populates itself form the housing object.
+            */
             DalamudApi.PluginLog.Debug(string.Format("placing item {0}",(housing+24).ToString()));
             PlaceItemHook.Original(housing, item);
         }
